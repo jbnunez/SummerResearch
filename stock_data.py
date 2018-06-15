@@ -90,4 +90,4 @@ for i in range(X_len):
     labels[i] = make_label(X_full[0,i+days_back])
 
 #print(X_covs)
-    
+print("Generated "+str(X_len)+" samples")

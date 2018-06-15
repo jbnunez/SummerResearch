@@ -38,7 +38,7 @@ elif metric == "aff":
 else:
     raise ValueError("unrerecognized metric")
 
-def k_means(X, k, eps=1e-10, max_iter=1000, print_freq=10):
+def k_means(X, k, eps=1e-4, max_iter=1000, print_freq=5):
     """ This function takes in the following arguments:
             1) X, the data matrix with dimension m x n x n
             2) k, the number of clusters
@@ -57,11 +57,13 @@ def k_means(X, k, eps=1e-10, max_iter=1000, print_freq=10):
     t_start = time.time()
     # randomly generate k clusters
     
-    clusters = []
-    for i in range(k):
-        A = np.random.rand(n,n)
-        clusters.append(A @ A.T)
-    clusters = np.array(clusters)
+    start_inds = np.random.randint(m, size=k)
+    clusters = X[start_inds]
+    #clusters = []
+    #for i in range(k):
+    #    A = 0.01*np.random.rand(n,n)
+    #    clusters.append(A @ A.T)
+    #clusters = np.array(clusters)
 
     #clusters = np.random.multivariate_normal((.5 + np.random.rand(n)) * X.mean(axis=0), 10 * X.std(axis=0) * np.eye(n), \
     #   size=k)
@@ -86,6 +88,9 @@ def k_means(X, k, eps=1e-10, max_iter=1000, print_freq=10):
             ind = np.where(label == cluster_num)[0]
             if len(ind)>0:
                 clusters[cluster_num,:] = met.cov_mean(X[ind])
+            else:
+                print("empty cluster found, reinitializing cluster")
+                clusters[cluster_num] = X[np.random.randint(m)]
 
         # TODO: Calculate cost and append to cost_list
         cost = k_means_cost(X, clusters, label)
@@ -98,6 +103,11 @@ def k_means(X, k, eps=1e-10, max_iter=1000, print_freq=10):
             print('-- Algorithm converges at iteration {} \
                 with cost {:4.4E}'.format(iter_num + 1, cost))
             break
+        if len(cost_list)>1:
+            if cost_list[-1]/cost_list[-2]>1.001:
+                print('-- ERROR: cost increased at iteration {} \
+                      with cost {:4.4E}'.format(iter_num + 1, cost))
+                break
         iter_num += 1
 
     t_end = time.time()
@@ -125,8 +135,9 @@ def k_means_cost(X, clusters, label):
     # TODO: Calculate the total cost
     X_cluster = clusters[label.flatten()]
     diff = np.array([met.dist(X[i], X_cluster[i]) for i in range(m)])
-    cost = np.linalg.norm(diff) ** 2
-
+    #cost = np.linalg.norm(diff) ** 2
+    cost = np.sum(diff)
+    
     return cost
 
 
