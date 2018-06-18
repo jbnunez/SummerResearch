@@ -75,10 +75,10 @@ X_eigs = np.zeros((X_len, 3))
 labels = np.zeros(X_len)
 
 #normalize volume
-minvol = np.min(X_full[i,1])
-maxvol = np.max(X_full[i,1])
-X_full[i,1] -= minvol
-X_full[i,1] /= (maxvol-minvol)
+minvol = np.min(X_full[:,1])
+maxvol = np.max(X_full[:,1])
+X_full[:,1] -= minvol
+X_full[:,1] /= (maxvol-minvol)
 
 print('==>Generating Samples and Labels...')
 
