@@ -74,15 +74,17 @@ X_covs = np.zeros((X_len, 3, 3))
 X_eigs = np.zeros((X_len, 3))
 labels = np.zeros(X_len)
 
+#normalize volume
+minvol = np.min(X_full[i,1])
+maxvol = np.max(X_full[i,1])
+X_full[i,1] -= minvol
+X_full[i,1] /= (maxvol-minvol)
+
 print('==>Generating Samples and Labels...')
 
 for i in range(X_len):
     X_samples[i] = X_full[:,i:(i+days_back)].reshape((3, days_back))
-    #normalize volume
-    minvol = np.min(X_samples[i,1])
-    maxvol = np.max(X_samples[i,1])
-    X_samples[i,1] -= minvol
-    X_samples[i,1] /= maxvol-minvol
+    
     #compute covariance
     X_covs[i] = np.cov(X_samples[i])
     #compute eigenvalues

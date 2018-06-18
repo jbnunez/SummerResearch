@@ -11,7 +11,7 @@ from scipy import random, linalg, stats
 class spd_knn():
 
 
-    def __init__(k=5, X, y, metric = 'aff'):
+    def __init__(X, y, k=5, metric = 'aff'):
         self.K = k
         self.X = X
         self.y = y
