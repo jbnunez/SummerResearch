@@ -6,7 +6,7 @@ import copy
 import time
 from sklearn.metrics.pairwise import rbf_kernel
 from scipy import random, linalg, stats
-
+#from statistics import mode
 #log euclidean metric
 metric = "leu"
 #affine invariant metric
@@ -22,7 +22,7 @@ else:
 class spd_knn():
 
 
-    def __init__(X, y, k=5):#, metric = 'aff'):
+    def __init__(self, X, y, k=5):#, metric = 'aff'):
         self.K = k
         self.X = X
         self.y = y
@@ -51,7 +51,7 @@ class spd_knn():
                     nearest_dists[max_ind] = dist
                     nearest_labels[max_ind] = self.y[j]
 
-            predictions[i] = stats.mode(nearest_labels)
+            predictions[i] = stats.mode(nearest_labels)[0][0]
 
         return predictions
 

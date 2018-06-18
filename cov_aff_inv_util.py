@@ -28,7 +28,7 @@ def log_mat(evals, P, form='mat'):
 
 
 def cov_mean(DataSeq):
-    n = DataSeq[0].shape.item(0)
+    n = DataSeq[0].shape[0]
     K = len(DataSeq)
 
     pos = np.eye(n)
@@ -81,8 +81,8 @@ def cov_var(cov_mat_list):
 
 
 def cov_covar(X):
-    m = X.shape.item(0)#number of rows
-    n = X.shape.item(1)#number of sample covmats
+    m = X.shape[0]#number of rows
+    n = X.shape[1]#number of sample covmats
 
     """assume that X is a list of vectors of sample covariances"""
     expectations = [cov_mean(x) for x in X]

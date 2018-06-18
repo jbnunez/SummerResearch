@@ -20,6 +20,7 @@ import copy
 import time
 from sklearn.metrics.pairwise import rbf_kernel
 from scipy import random, linalg, stats
+#from statistics import mode
 #import stock_data as data
 
 #########################################
@@ -73,7 +74,7 @@ class spd_k_means():
             3) cost_list, a list of costs at each iteration
         """
         m, n, n2 = X.shape
-        cost_list = []
+        self.cost_list = []
         t_start = time.time()
         # randomly generate k clusters
         
@@ -140,7 +141,7 @@ class spd_k_means():
                     dimension m x 1
 
             This function calculates and returns the cost for the given data
-            and clusters.
+            and clusters./Users/hmcguest/SummerResearch/cov_knn.py
 
             NOTE:
                 1) The total cost is defined by the sum of the l2-norm difference
@@ -162,15 +163,18 @@ class spd_k_means():
         self.predictions = np.zeros(self.K)
         for cluster_num in range(self.K):
             ind = np.where(self.labels == cluster_num)[0]
-            pred = stats.mode(targets[ind])
-            self.predictions[cluster_num] = pred
-
+            if len(ind)>0:
+                pred = stats.mode(targets[ind])[0][0]
+                self.predictions[cluster_num] = pred
+            else:
+                print("Cluster "+str(cluster_num)+" is empty")
+                self.predictions[cluster_num] = -1
 
     def predict(self, X_test):
         m = X_test.shape[0]
-        predictions = np.zeros(m)
+        preds = np.zeros(m)
         for i in range(m):
-            data = X_test[m]
+            data = X_test[i]
             diff = np.array([met.dist(data, cluster) for cluster in self.clusters])
             cluster_num = np.argmin(diff)
             preds[i] = self.predictions[cluster_num]

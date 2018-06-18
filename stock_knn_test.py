@@ -9,15 +9,21 @@ y_len = y.shape[0]
 test_len = y_len//5
 train_len = y_len - test_len
 
-shuffled = np.random.permutation(zip(X, y))
-test = shuffled[:test_len]
-train = shuffled[test_len:]
-X_test, y_test = zip(*test)
-X_train, y_train = zip(*train)
+shuffled = np.random.permutation(y_len)
+test_ind = shuffled[:test_len]
+train_ind = shuffled[test_len:]
+X_test, y_test = X[test_ind], y[test_ind]
+X_train, y_train = X[train_ind], y[train_ind]
+
 
 model = ck.spd_knn(X_train, y_train, k=5)
 
 model.evaluate(X_test, y_test)
+
+model2 = ck.spd_knn(X_train, y_train, k=10)
+
+model2.evaluate(X_test, y_test)
+
 
 # model1 = ck.spd_knn(X_train, y_train, k=5, metric='aff')
 # model2 = ck.spd_knn(X_train, y_train, k=5, metric='leu')

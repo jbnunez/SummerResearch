@@ -23,6 +23,13 @@ model.fit(X_train, y_train)
 model.evaluate(X_test, y_test)
 
 
+model2 = cvk.spd_k_means(k=10)
+
+model2.fit(X_train, y_train)
+
+model2.evaluate(X_test, y_test)
+
+
 # model1 = cvk.spd_k_means(metric='aff')
 # model2 = cvk.spd_k_means(metric='leu')
 
