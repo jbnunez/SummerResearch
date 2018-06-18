@@ -15,12 +15,15 @@ train = shuffled[test_len:]
 X_test, y_test = zip(*test)
 X_train, y_train = zip(*train)
 
+model = ck.spd_knn(X_train, y_train, k=5)
 
-model1 = ck.spd_knn(X_train, y_train, k=5, metric='aff')
-model2 = ck.spd_knn(X_train, y_train, k=5, metric='leu')
+model.evaluate(X_test, y_test)
 
-model1.evaluate(X_test, y_test)
-model2.evaluate(X_test, y_test)
+# model1 = ck.spd_knn(X_train, y_train, k=5, metric='aff')
+# model2 = ck.spd_knn(X_train, y_train, k=5, metric='leu')
+
+# model1.evaluate(X_test, y_test)
+# model2.evaluate(X_test, y_test)
 
 
 

@@ -26,28 +26,30 @@ from scipy import random, linalg, stats
 #            Helper Functions           #
 #########################################
 
-# #log euclidean metric
-# metric = "leu"
-# #affine invariant metric
-# #metric = "aff"
+#log euclidean metric
+metric = "leu"
+#affine invariant metric
+#metric = "aff"
 
-# if metric == "leu":
-#     import cov_util as met
-# elif metric == "aff":
-#     import cov_aff_inv_util as met
-# else:
-#     raise ValueError("unrerecognized metric")
+if metric == "leu":
+    import cov_util as met
+elif metric == "aff":
+    import cov_aff_inv_util as met
+else:
+    raise ValueError("unrerecognized metric")
 
 class spd_k_means():
 
-    def __init__(self, k=5, metric = 'aff'):
+    def __init__(self, k=5):#, metric = 'aff'):
         self.K = k
-        if metric == "leu":
-            import cov_util as met
-        elif metric == "aff":
-            import cov_aff_inv_util as met
-        else:
-            raise ValueError("unrerecognized metric")
+        
+        # if metric == "leu":
+        #     import cov_util as met
+        # elif metric == "aff":
+        #     import cov_aff_inv_util as met
+        # else:
+        #     raise ValueError("unrerecognized metric")
+
         #list of cluster centers
         self.clusters = None
         #list of sample cluster assignments

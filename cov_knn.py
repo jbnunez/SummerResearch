@@ -7,21 +7,33 @@ import time
 from sklearn.metrics.pairwise import rbf_kernel
 from scipy import random, linalg, stats
 
+#log euclidean metric
+metric = "leu"
+#affine invariant metric
+#metric = "aff"
+
+if metric == "leu":
+    import cov_util as met
+elif metric == "aff":
+    import cov_aff_inv_util as met
+else:
+    raise ValueError("unrerecognized metric")
 
 class spd_knn():
 
 
-    def __init__(X, y, k=5, metric = 'aff'):
+    def __init__(X, y, k=5):#, metric = 'aff'):
         self.K = k
         self.X = X
         self.y = y
         self.X_len = X.shape[0]
-        if metric == "leu":
-            import cov_util as met
-        elif metric == "aff":
-            import cov_aff_inv_util as met
-        else:
-            raise ValueError("unrerecognized metric")
+
+        # if metric == "leu":
+        #     import cov_util as met
+        # elif metric == "aff":
+        #     import cov_aff_inv_util as met
+        # else:
+        #     raise ValueError("unrerecognized metric")
 
 
     def predict(self, X_test):

@@ -16,15 +16,21 @@ X_test, y_test = X[test_ind], y[test_ind]
 X_train, y_train = X[train_ind], y[train_ind]
 
 
+model = cvk.spd_k_means()
 
-model1 = cvk.spd_k_means(metric='aff')
-model2 = cvk.spd_k_means(metric='leu')
+model.fit(X_train, y_train)
 
-model1.fit(X_train, y_train)
-model2.fit(X_train, y_train)
+model.evaluate(X_test, y_test)
 
-model1.evaluate(X_test, y_test)
-model2.evaluate(X_test, y_test)
+
+# model1 = cvk.spd_k_means(metric='aff')
+# model2 = cvk.spd_k_means(metric='leu')
+
+# model1.fit(X_train, y_train)
+# model2.fit(X_train, y_train)
+
+# model1.evaluate(X_test, y_test)
+# model2.evaluate(X_test, y_test)
 
 
 
