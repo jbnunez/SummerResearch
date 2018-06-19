@@ -15,7 +15,7 @@ print('==>Loading data...')
 
 df_spy = pd.read_json('https://api.iextrading.com/1.0/stock/'
     +'spy'+'/chart/5y')
-df_nke = pd.read_json('https://api.iextrading.com/1.0/stock/'
+df_stock = pd.read_json('https://api.iextrading.com/1.0/stock/'
     +'NKE'+'/chart/5y')
 
 #how far back to calculate covariance
@@ -27,24 +27,24 @@ def calc_cgrs():
     spy_ratio = spy_pricep1/spy_price
     spy_cgr = np.log(spy_ratio)[1:]
 
-    nke_price = np.array(df_nke.close)
-    nke_pricep1 = np.roll(nke_price,1)
-    nke_ratio = nke_pricep1/nke_price
-    nke_cgr = np.log(nke_ratio)[1:]
+    stock_price = np.array(df_stock.close)
+    stock_pricep1 = np.roll(stock_price,1)
+    stock_ratio = stock_pricep1/stock_price
+    stock_cgr = np.log(stock_ratio)[1:]
 
-    nke_volume = np.array(df_nke.volume)[1:]
+    stock_volume = np.array(df_stock.volume)[1:]
 
     
-    return nke_cgr, nke_volume, spy_cgr
+    return stock_cgr, stock_volume, spy_cgr
 
-nke_cgr, nke_volume, spy_cgr = calc_cgrs()
+stock_cgr, stock_volume, spy_cgr = calc_cgrs()
 #ignore this one #first row of X is first nke_cgr, first nke_volume, first spy_cgr
 #first row of X is all nke_cgr, seoncd is volume, thrid is spy
-X_full = np.vstack((nke_cgr, nke_volume, spy_cgr))
+X_full = np.vstack((stock_cgr, stock_volume, spy_cgr))
 
 print('==>Making Bins...')
 #make 5 bins: big loss, small loss, very small loss/gain, small gain, big gain
-returns = sorted(nke_cgr)
+returns = sorted(stock_cgr)
 gains = [i for i in returns if i>float(0)]
 losses = [i for i in returns if i<=float(0)]
 num_gains = len(gains)
@@ -59,12 +59,18 @@ big_gain_bin = (gains[1+(num_gains*2)//3], float("inf"))
 
 bins = [big_loss_bin, small_loss_bin, mid_bin, small_gain_bin, big_gain_bin]
 
-def make_label(ret):
-    for i in range(5):
-        (low, high) = bins[i]
-        if low <= ret and ret <= high:
-            return i
-    #raise ValueError("unreal cgr, could not label")
+def make_label(ret, labels="bins"):
+    if labels=='bins':
+        for i in range(5):
+            (low, high) = bins[i]
+            if low <= ret and ret <= high:
+                return i
+        #raise ValueError("unreal cgr, could not label")
+    elif labels=='binary':
+        if i < 0:
+            return 0
+        else:
+            return 1
 
 #make indices for sampling
 #inds = np.arange(0, len(nke_cgr), days_back)[:-1]
@@ -89,7 +95,7 @@ for i in range(X_len):
     X_covs[i] = np.cov(X_samples[i])
     #compute eigenvalues
     X_eigs[i] = np.linalg.eigvalsh(X_covs[i])
-    labels[i] = make_label(X_full[0,i+days_back])
+    labels[i] = make_label(X_full[0,i+days_back], labels='binary')
 
 #print(X_covs)
 print("Generated "+str(X_len)+" samples")

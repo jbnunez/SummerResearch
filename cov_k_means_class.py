@@ -28,9 +28,9 @@ from scipy import random, linalg, stats
 #########################################
 
 #log euclidean metric
-metric = "leu"
+#metric = "leu"
 #affine invariant metric
-#metric = "aff"
+metric = "aff"
 
 if metric == "leu":
     import cov_util as met
@@ -60,7 +60,7 @@ class spd_k_means():
         #class predictions for clusters
         self.predictions = None
 
-    def fit(self, X, y, eps=1e-4, max_iter=1000, print_freq=5):
+    def fit(self, X, y, eps=1e-5, max_iter=1000, print_freq=5):
         """ This function takes in the following arguments:
             1) X, the data matrix with dimension m x n x n
             2) y, the data labels
