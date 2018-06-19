@@ -36,7 +36,7 @@ class spd_knn():
         #     raise ValueError("unrerecognized metric")
 
 
-    def predict(self, X_test):
+    def predict(self, X_test, freq=10):
         m = X_test.shape[0]
         predictions = np.zeros(m)
         for i in range(m):
@@ -52,6 +52,8 @@ class spd_knn():
                     nearest_labels[max_ind] = self.y[j]
 
             predictions[i] = stats.mode(nearest_labels)[0][0]
+            if i%freq == 0:
+                print("Completed "+str(i)+" out of "+str(m)+" predictions")
 
         return predictions
 

@@ -67,7 +67,7 @@ def make_label(ret, labels="bins"):
                 return i
         #raise ValueError("unreal cgr, could not label")
     elif labels=='binary':
-        if i < 0:
+        if ret < 0:
             return 0
         else:
             return 1
