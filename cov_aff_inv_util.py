@@ -7,24 +7,25 @@ import math
 def dist(S, X):
     sqrm = sc.linalg.sqrtm(S)
     inner = sqrm @ X @ sqrm    
-    eigs, P = lin.eigh(inner)
-    logMat = log_mat(eigs, P)
+    logmat = sc.linalg.logm(inner)
+    #eigs, P = lin.eigh(inner)
+    #logMat = log_mat(eigs, P)
     return lin.norm(logMat)
 
 
-def to_diag(cov_mat_list):
-    if isinstance(cov_mat_list[0], tuple):
-        return cov_mat_list
-    return [lin.eigh(cm) for cm in cov_mat_list]
+# def to_diag(cov_mat_list):
+#     if isinstance(cov_mat_list[0], tuple):
+#         return cov_mat_list
+#     return [lin.eigh(cm) for cm in cov_mat_list]
 
 
-def log_mat(evals, P, form='mat'):
-    if form == 'mat':
-        return P @ np.diag(np.log(evals)) @ lin.inv(P)
-    elif form == 'tup':
-        return np.log(evals), P
-    else:
-        ValueError("Unrecognized form: "+form+". Use tup or mat.")
+# def log_mat(evals, P, form='mat'):
+#     if form == 'mat':
+#         return P @ np.diag(np.log(evals)) @ lin.inv(P)
+#     elif form == 'tup':
+#         return np.log(evals), P
+#     else:
+#         ValueError("Unrecognized form: "+form+". Use tup or mat.")
 
 
 def cov_mean(DataSeq):
