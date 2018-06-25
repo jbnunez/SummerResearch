@@ -6,12 +6,20 @@ import math
 
 def dist(S, X):
     sqrm = sc.linalg.sqrtm(S)
-    inner = sqrm @ X @ sqrm    
-    logmat = sc.linalg.logm(inner)
+    sqinv = lin.inv(sqrm)
+    inner = sqinv @ X @ sqinv    
+    logMat = sc.linalg.logm(inner)
     #eigs, P = lin.eigh(inner)
     #logMat = log_mat(eigs, P)
     return lin.norm(logMat)
 
+def inner(A, B):
+    return np.trace(A @ B)
+
+# def inner(A, B, P):
+#     Pinv = lin.inv(P)
+#     prod = Pinv @ A @ Pinv @ B
+#     return np.trace(prod)
 
 # def to_diag(cov_mat_list):
 #     if isinstance(cov_mat_list[0], tuple):
