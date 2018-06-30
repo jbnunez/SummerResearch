@@ -14,10 +14,8 @@ def dist(S, X):
 	logX = slin.logm(X)
 	return lin.norm(logS - logX)
 
-def inner(A, B, P):
-	Pinv = lin.inv(P)
-	prod = Pinv @ A @ Pinv @ B
-	return np.trace(prod)
+def inner(A, B):
+	return np.trace(A @ B)
 
 # def dist2(se, sp, logX):
 # 	logse = np.log(se)

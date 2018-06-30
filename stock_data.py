@@ -15,8 +15,10 @@ print('==>Loading data...')
 
 df_spy = pd.read_json('https://api.iextrading.com/1.0/stock/'
     +'spy'+'/chart/5y')
+df_ind = pd.read_json('https://api.iextrading.com/1.0/stock/'
+    +'qtec'+'/chart/5y')
 df_stock = pd.read_json('https://api.iextrading.com/1.0/stock/'
-    +'NKE'+'/chart/5y')
+    +'amzn'+'/chart/5y')
 
 #how far back to calculate covariance
 days_back = 20
@@ -27,6 +29,11 @@ def calc_cgrs():
     spy_ratio = spy_pricep1/spy_price
     spy_cgr = np.log(spy_ratio)[1:]
 
+    ind_price = np.array(df_ind.close)
+    ind_pricep1 = np.roll(ind_price,1)
+    ind_ratio = ind_pricep1/ind_price
+    ind_cgr = np.log(ind_ratio)[1:]
+
     stock_price = np.array(df_stock.close)
     stock_pricep1 = np.roll(stock_price,1)
     stock_ratio = stock_pricep1/stock_price
@@ -35,12 +42,12 @@ def calc_cgrs():
     stock_volume = np.array(df_stock.volume)[1:]
 
     
-    return stock_cgr, stock_volume, spy_cgr
+    return stock_cgr, stock_volume, spy_cgr, ind_cgr
 
-stock_cgr, stock_volume, spy_cgr = calc_cgrs()
+stock_cgr, stock_volume, spy_cgr, ind_cgr = calc_cgrs()
 #ignore this one #first row of X is first nke_cgr, first nke_volume, first spy_cgr
 #first row of X is all nke_cgr, seoncd is volume, thrid is spy
-X_full = np.vstack((stock_cgr, stock_volume, spy_cgr))
+X_full = np.vstack((stock_cgr, stock_volume, spy_cgr, ind_cgr))
 
 print('==>Making Bins...')
 #make 5 bins: big loss, small loss, very small loss/gain, small gain, big gain
@@ -75,9 +82,11 @@ def make_label(ret, labels="bins"):
 #make indices for sampling
 #inds = np.arange(0, len(nke_cgr), days_back)[:-1]
 X_len = len(X_full[0])-days_back-1
-X_samples = np.zeros((X_len, 3, days_back))
-X_covs = np.zeros((X_len, 3, 3))
-X_eigs = np.zeros((X_len, 3))
+X_samples = np.zeros((X_len, 4, days_back))
+X_covs = np.zeros((X_len, 4, 4))
+X_evals = np.zeros((X_len, 4))
+X_evecs_ = np.zeros((X_len, 4, 4))
+
 labels = np.zeros(X_len)
 
 #normalize volume
@@ -89,13 +98,14 @@ X_full[:,1] /= (maxvol-minvol)
 print('==>Generating Samples and Labels...')
 
 for i in range(X_len):
-    X_samples[i] = X_full[:,i:(i+days_back)].reshape((3, days_back))
+    X_samples[i] = X_full[:,i:(i+days_back)].reshape((4, days_back))
     
     #compute covariance
     X_covs[i] = np.cov(X_samples[i])
     #compute eigenvalues
-    X_eigs[i] = np.linalg.eigvalsh(X_covs[i])
-    labels[i] = make_label(X_full[0,i+days_back], labels='binary')
+    X_evals[i], X_evecs_[i] = np.linalg.eigh(X_covs[i])
+    X_evecs = X_evecs_.reshape((X_len, 16))
+    labels[i] = make_label(X_full[0,i+days_back], labels='bins')
 
 #print(X_covs)
 print("Generated "+str(X_len)+" samples")
