@@ -105,7 +105,7 @@ for i in range(X_len):
     #compute eigenvalues
     X_evals[i], X_evecs_[i] = np.linalg.eigh(X_covs[i])
     X_evecs = X_evecs_.reshape((X_len, 16))
-    labels[i] = make_label(X_full[0,i+days_back], labels='bins')
+    labels[i] = make_label(X_full[0,i+days_back], labels='binary')
 
 #print(X_covs)
 print("Generated "+str(X_len)+" samples")
