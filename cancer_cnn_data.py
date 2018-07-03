@@ -34,13 +34,29 @@ for ind in indices:
 			#read first image
 			ds = pydicom.dcmread(path)
 			data = ds.pixel_array
+			#print(data.shape)
 			images.append(data)
 			break
 
 		else:
 			#enter deeper directory
 			current_dir = os.listdir(path=path)
-
+keep = []
+for i in range(len(images)):
+	if images[i].shape == (256,256):
+		keep.append(i)
 images = np.array(images)
+images = np.array(images[keep])
 labels = np.array(labels)
-print('==> Loaded '+str(images.shape[0])+' images')
+labels = np.array(labels[keep])
+targets = np.zeros((labels.shape[0], 2))
+for i in range(len(labels)):
+	if labels[i] == "WITH TUMOR":
+		targets[i,0] = 1
+	else:
+		targets[i,1] = 1
+N, height, width = images.shape
+images = images.reshape((N, height, width, 1))
+
+
+print('==> Loaded '+str(len(keep))+' images')
