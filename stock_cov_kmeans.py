@@ -14,7 +14,7 @@ test_ind = shuffled[:test_len]
 train_ind = shuffled[test_len:]
 X_test, y_test = X[test_ind], y[test_ind]
 X_train, y_train = X[train_ind], y[train_ind]
-
+print("Label type = "+data.labeltype)
 
 model = cvk.spd_k_means()
 

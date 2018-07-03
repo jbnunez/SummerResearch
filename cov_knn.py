@@ -53,7 +53,7 @@ class spd_knn():
 
             predictions[i] = stats.mode(nearest_labels)[0][0]
             if i%freq == 0:
-                print("Completed "+str(i)+" out of "+str(m)+" predictions")
+                print("Completed "+str(i+1)+" out of "+str(m)+" predictions")
 
         return predictions
 

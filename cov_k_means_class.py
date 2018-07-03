@@ -28,9 +28,9 @@ from scipy import random, linalg, stats
 #########################################
 
 #log euclidean metric
-#metric = "leu"
+metric = "leu"
 #affine invariant metric
-metric = "aff"
+#metric = "aff"
 
 if metric == "leu":
     import cov_util as met
@@ -54,7 +54,7 @@ class spd_k_means():
         #list of cluster centers
         self.clusters = None
         #list of sample cluster assignments
-        self.labels = None
+        self.label = None
         #cost list as means are found
         self.cost_list = None
         #class predictions for clusters
@@ -118,7 +118,7 @@ class spd_k_means():
                     with cost {:4.4E}'.format(iter_num + 1, cost))
                 break
             if len(self.cost_list)>1:
-                if self.cost_list[-1]/self.cost_list[-2]>1.001:
+                if self.cost_list[-1]/self.cost_list[-2]>1.0001:
                     print('-- ERROR: cost increased at iteration {} \
                           with cost {:4.4E}'.format(iter_num + 1, cost))
                     break
@@ -162,7 +162,7 @@ class spd_k_means():
     def assign_labels(self, targets):
         self.predictions = np.zeros(self.K)
         for cluster_num in range(self.K):
-            ind = np.where(self.labels == cluster_num)[0]
+            ind = np.where(self.label == cluster_num)[0]
             if len(ind)>0:
                 pred = stats.mode(targets[ind])[0][0]
                 self.predictions[cluster_num] = pred
