@@ -42,19 +42,26 @@ for ind in indices:
 			#enter deeper directory
 			current_dir = os.listdir(path=path)
 keep = []
+keepind = []
 for i in range(len(images)):
 	if images[i].shape == (256,256):
-		keep.append(i)
-images = np.array(images)
-images = np.array(images[keep])
+		keep.append(images[i])
+		keepind.append(i)
+images = np.array(keep)
 labels = np.array(labels)
-labels = np.array(labels[keep])
+labels = labels[keepind]
 targets = np.zeros((labels.shape[0], 2))
+keep = []
 for i in range(len(labels)):
 	if labels[i] == "WITH TUMOR":
 		targets[i,0] = 1
-	else:
+		keep.append(i)
+	elif labels[i] == "TUMOR FREE":
 		targets[i,1] = 1
+		keep.append(i)
+keep = np.array(keep)
+images = images[keep]
+targets = targets[keep]
 N, height, width = images.shape
 images = images.reshape((N, height, width, 1))
 
