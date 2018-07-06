@@ -41,16 +41,27 @@ for ind in indices:
 		else:
 			#enter deeper directory
 			current_dir = os.listdir(path=path)
-keep = []
-keepind = []
-for i in range(len(images)):
-	if images[i].shape == (256,256):
-		keep.append(images[i])
-		keepind.append(i)
-images = np.array(keep)
+
+#pad the data
+shapes1 = [image.shape[0] for image in images]
+shapes2 = [image.shape[1] for image in images]
+dim1 = np.max(shapes1)
+dim2 = np.max(shapes2)
+N = len(images)
+padded = np.zeros((N, dim1, dim2))
+
+for i in range(N):
+	idim1, idim2 = images[i].shape
+	diff1 = dim1-idim1
+	diff2 = dim2-idim2
+	start1 = diff1//2
+	start2 = diff2//2
+	padded[i, start1:start1+idim1, start2:start2+idim2] = images[i]
+
+
+
 labels = np.array(labels)
-labels = labels[keepind]
-targets = np.zeros((labels.shape[0], 2))
+targets = np.zeros((N, 2))
 keep = []
 for i in range(len(labels)):
 	if labels[i] == "WITH TUMOR":
@@ -60,10 +71,10 @@ for i in range(len(labels)):
 		targets[i,1] = 1
 		keep.append(i)
 keep = np.array(keep)
-images = images[keep]
+padded = padded[keep]
 targets = targets[keep]
-N, height, width = images.shape
-images = images.reshape((N, height, width, 1))
+N, height, width = padded.shape
+images = padded.reshape((N, height, width, 1))
 
 
-print('==> Loaded '+str(len(keep))+' images')
+print('==> Loaded '+str(N)+' images')
