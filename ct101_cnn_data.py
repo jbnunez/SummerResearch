@@ -55,7 +55,10 @@ for i in range(N):
 		padded[i, start1:start1+idim1, start2:start2+idim2] = images[i]
 	else:
 		padded[i, start1:start1+idim1, start2:start2+idim2, 0] = images[i]
+	if i%10 == 0:
+		print("==> Padded "+str(i)+" images")
 
+print('==> Making one-hot target vectors')
 #make targets into one-hot vectors
 targets = np.zeros((N, C))
 for i in range(N):
