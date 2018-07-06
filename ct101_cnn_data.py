@@ -32,7 +32,7 @@ for i in range(c):
 					images.append(im_arr)
 					labels.append(C)
 			C += 1
-
+labels = np.array(labels)
 print("==> Read in "+str(C)+" image categories")
 print("==> Padding images")
 
@@ -55,18 +55,26 @@ for i in range(N):
 		padded[i, start1:start1+idim1, start2:start2+idim2] = images[i]
 	else:
 		padded[i, start1:start1+idim1, start2:start2+idim2, 0] = images[i]
-	if i%10 == 0:
+	if i%1000 == 0:
 		print("==> Padded "+str(i)+" images")
-
+images = None
 print('==> Making one-hot target vectors')
 #make targets into one-hot vectors
-targets = np.zeros((N, C))
-for i in range(N):
-	targets[i, labels[i]] = 1.
+# targets = np.zeros((N, C))
+# if len(labels)==N:
+# 	print("yay the lengths match and are "+str(N))
+# for i in range(N):
+# 	targets[i][labels[i]] = 1.
+# 	if i%1000 == 0:
+# 		print("==> Made "+str(i)+" target vectors")
+#this is the coolest bit of python golf I've seen in a while
+targets = np.eye(C)[labels]
 
-images = np.array(padded)
-
-X_train, X_test, y_train, y_test = model_selection.train_test_split(images, targets, test_size=0.2)
-
+#images = np.array(padded)
+print("==> Making test-train split")
+X_train, X_test, y_train, y_test = model_selection.train_test_split(padded,
+	targets, test_size=0.2)
+targets = None
+padded = None
 
 print('==> Loaded '+str(N)+' images')
