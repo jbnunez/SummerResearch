@@ -1,8 +1,7 @@
-#ct101_cnn_data.py
+#make_ct101_cnn_samples.py
 import os
 import numpy as np
 from scipy import misc
-from sklearn import model_selection
 
 ignore_misc = True
 if ignore_misc:
@@ -15,10 +14,7 @@ categories = os.listdir(path=path)
 
 #read in images
 images = []
-labels = []
 c = len(categories)
-#counter for actual number of categories
-C = 0
 print("==> Reading in images")
 for i in range(c):
 	if categories[i] != '.DS_Store':
@@ -30,13 +26,11 @@ for i in range(c):
 				if im_file != '.DS_Store':
 					im_arr = misc.imread(dirpath+'/'+im_file)
 					images.append(im_arr)
-					labels.append(C)
-			C += 1
-labs = np.array(labels)
-del labels
+			#if C >= 50:
+			#	break
 del categories
 
-print("==> Read in "+str(C)+" image categories")
+print("==> Read in "+str(c)+" image categories")
 print("==> Padding images")
 
 #pad images
@@ -44,8 +38,10 @@ shapes1 = [image.shape[0] for image in images]
 shapes2 = [image.shape[1] for image in images]
 dim1 = np.max(shapes1)
 dim2 = np.max(shapes2)
+print("Padded dimensions:f",dim1, dim2)
+#N = 5.0/0
 N = len(images)
-padded = np.zeros((N, dim1, dim2, 3))
+padded = np.zeros((N, dim1, dim2, 3),dtype=np.uint8)
 del shapes1
 del shapes2
 
@@ -62,32 +58,8 @@ for i in range(N):
 	if i%1000 == 0:
 		print("==> Padded "+str(i)+" images")
 del images 
-print('==> Making one-hot target vectors')
-#make targets into one-hot vectors
-# targets = np.zeros((N, C))
-# if len(labels)==N:
-# 	print("yay the lengths match and are "+str(N))
-# for i in range(N):
-# 	targets[i][labels[i]] = 1.
-# 	if i%1000 == 0:
-# 		print("==> Made "+str(i)+" target vectors")
-#this is the coolest bit of python golf I've seen in a while
-eye = np.eye(C)
-targets = eye[labs]
-del labs
-eye=None
+print('==> Saving as .npy')
 
-#images = np.array(padded)
-# print("==> Making test-train split")
-# test_ind = np.random.choice(N//5)
-# X_test = padded[test_ind]
-# y_test = targets[test_ind]
-# X_train = np.delete(padded, test_ind)
-# y_train = np.delete(targets, test_ind)
-
-X_train, X_test, y_train, y_test = model_selection.train_test_split(padded,
-	targets, test_size=0.2)
-del targets
+np.save("images", padded)
 del padded
-
-print('==> Loaded '+str(N)+' images')
+print('==> saved '+str(N)+' images')
