@@ -3,6 +3,9 @@ import os
 import numpy as np
 #from scipy import misc
 
+#this file is incomplete and was never used because a generator was not
+#needed for this problem
+
 ignore_misc = True
 if ignore_misc:
 	print('==> Ignoring miscellaneous category')
