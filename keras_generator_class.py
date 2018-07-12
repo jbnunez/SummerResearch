@@ -7,11 +7,12 @@ import numpy as np
 import keras
 from scipy import misc
 import pydicom
+from skimage.transform import resize
 
 
 class DataGenerator(keras.utils.Sequence):
 
-    def __init__(self, list_IDs, labels, batch_size=10, dim=(256,256),
+    def __init__(self, list_IDs, labels, batch_size=10, dim=(128,128),
         n_channels=1, shuffle=True):
         'Initialization'
         self.dim = dim
@@ -34,7 +35,7 @@ class DataGenerator(keras.utils.Sequence):
         'Denotes the number of batches per epoch'
         return int(np.floor(len(self.list_IDs) / self.batch_size))
 
-    def rgbToGray(rgbMat):
+    def rgbToGray(self, rgbMat):
         grayMat = np.empty((*self.dim, self.n_channels), 
             dtype=np.uint8)
         grayMat[:,:,0] = 0.2989*rgbMat[:,:,0] + 0.5870*rgbMat[:,:,1] + 0.1140*rgbMat[:,:,2]
@@ -46,7 +47,7 @@ class DataGenerator(keras.utils.Sequence):
         # Initialization
         X = np.empty((self.batch_size, *self.dim, self.n_channels), 
             dtype=np.uint8)
-        y = np.empty((self.batch_size, *self.dim, self.n_channels), 
+        y = np.empty((self.batch_size, 128*128), 
             dtype=np.uint8)
 
         path = '../desktop/cancer/TCGA-GBM/'
@@ -56,15 +57,19 @@ class DataGenerator(keras.utils.Sequence):
 
             ds = pydicom.dcmread(path+ID)
             temp = ds.pixel_array
-            resized = misc.imresize(temp, self.dim)
-            if resized.shape == (256,256,3):
-                resized = rgbToGray(resized)
-            resized = resized.reshape(256,256).astype(np.uint8)
-            X[i] = resized.reshape(256,256,1)
+            resized = resize(temp, self.dim)
+            if resized.shape == (128,128,3):
+                resized = self.rgbToGray(resized)
+            if resized.shape != (128, 128, 1) and resized.shape != (128, 128):
+                print(resized.shape)
+            resized = resized.reshape(128,128).astype(np.uint8)
+            X[i,:,:,:] = resized.reshape(128,128,1)
+            y[i,:] = resized.reshape(128*128)
+            #y[i] = channeled.reshape(256,256).flatten()
 
 
         # Store target
-        y[i] = X[i].flatten()
+        #y[:] = X[:].flatten()
 
         return X, y
 

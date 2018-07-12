@@ -15,10 +15,10 @@ from  sklearn.model_selection import train_test_split
 
 #use a mutlilayer cnn pooling strategy
 encoding_dim = 100
-input_shape = (256,256,1)
+input_shape = (128,128,1)
 target_dim = input_shape[0]*input_shape[1]
-num_epochs = 5
-steps_per_epoch = 10000
+num_epochs = 3
+steps_per_epoch = 8000
 
 
 #get IDs for training and validation samples
@@ -33,7 +33,7 @@ labels = None #input and output are identical for autoencoder
 
 
 # Parameters
-params = {'dim': (256, 256), 'batch_size': 30,
+params = {'dim': (128, 128), 'batch_size': 10,
     'n_channels': 1, 'shuffle': True}
 
 
@@ -82,14 +82,14 @@ decoder = Model(encoded_input, decoder_layer(encoded_input))
 
 
 print('==>Compiling autoencoder.')
-autoencoder.compile(loss='mean_squared_error', optimizer='adam')
+autoencoder.compile(loss='mean_squared_error', optimizer='nadam')
 
 
 print('==>Fitting autoencoder.')
 autoencoder.fit_generator(generator=training_generator, 
     steps_per_epoch=steps_per_epoch, epochs=num_epochs, 
-    validation_data=validation_generator, validation_steps=100)
-    #,use_multiprocessing=True, workers=2)
+    validation_data=validation_generator, validation_steps=100,
+    use_multiprocessing=False, workers=1)
 
 encoder.save("cancer_encoder")
 decoder.save("cancer_decoder")
