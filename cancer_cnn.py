@@ -36,7 +36,7 @@ model.add(Dense(num_classes, activation='softmax'))
 
 
 print('==>Compiling Model.')
-model.compile(loss='mean_squared_error', optimizer='sgd', metrics=['accuracy'])
+model.compile(loss='mean_squared_error', optimizer='adam')
 
 
 print('==>Fitting Model.')
