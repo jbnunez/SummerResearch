@@ -85,7 +85,7 @@ autoencoder = Model(input_image, decoder(encoder(input_image)))
 
 print('==>Compiling autoencoder.')
 autoencoder.compile(loss='binary_crossentropy', optimizer='adadelta')
-#autoencoder.compile(loss='mean_squared_error', optimizer='nadam')
+#autoencoder.compile(loss='mean_squared_error', optimizer='adam')
 
 
 autoencoder.summary()

@@ -55,9 +55,9 @@ if not np.any(autoencoded) or not np.any(decoded):
 print("decoded norm", np.linalg.norm(decoded))
 print("loss norm", loss)
 print("target norm", norm)
-print("autoencoded norm", np.linalg.norm(autoencoded))
 print("loss over norm", loss/norm)
 print("maximum of target", np.max(y))
+print("maximum of autoencoded", np.max(decoded))
 
 #decoder.predict(generator.__getitem__(0))
 

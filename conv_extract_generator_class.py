@@ -83,7 +83,7 @@ class DataGenerator(keras.utils.Sequence):
             encoder_input = resized.reshape(128,128,1)
             encoded = self.encoder.predict(encoder_input) #dim=100
             im_cov = itc.im_to_cov(resized) #dim=16x16 (4x4 kernel)
-            mat, vec = SE3.SEnToMatVec(im_cov) #dim
+            vec, mat = SE3.SEnToMatVec(im_cov) #dim
             evals = mat.flatten()
             norm = SE3.norm(mat,vec)
 

@@ -25,7 +25,7 @@ def CovToMatVec(covmat):
     return nlin.eigh(covmat)
 
 def CovToSEn(covmat):
-    mat, vec = nlin.eigh(covmat)
+    vec, mat = nlin.eigh(covmat)
     return MatVecToSEn(mat, vec)
 
 def inner(Sx, Sy):

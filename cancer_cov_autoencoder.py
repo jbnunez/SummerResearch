@@ -9,14 +9,14 @@ from keras.models import Sequential, load_model
 from keras.layers.core import Dense, Dropout, Activation
 from keras.layers import Input
 import pickle
-from conv_extract_generator_class import DataGenerator
+from covmat_generator import DataGenerator
 from  sklearn.model_selection import train_test_split
 import h5py
 
 
 #use a mutlilayer cnn pooling strategy
 encoding_dim = 100
-input_shape = (273) #16x16 + 16 + 1
+input_shape = (273,) #16x16 + 16 + 1
 target_dim = 273
 num_epochs = 10
 steps_per_epoch = 1000
@@ -34,8 +34,7 @@ labels = None #input and output are identical for autoencoder
 
 
 # Parameters
-params = {'dim': (273), 'batch_size': 30,
-    'n_channels': 1, 'shuffle': True}
+params = {'dim': (273,), 'batch_size': 30, 'shuffle': True}
 
 
 # Generators
@@ -49,8 +48,8 @@ input_image = Input(shape=input_shape)
 layer1 = Dense(800, activation='sigmoid')(input_image)
 layer2 = Dense(600, activation='sigmoid')(layer1)
 layer3 = Dense(400, activation='sigmoid')(layer2)
-layer4 = Dense(200, activation='sigmoid')(layer3)
-encoded = Dense(encoding_dim, activation='sigmoid')(layer4)
+#layer4 = Dense(200, activation='sigmoid')(layer3)
+encoded = Dense(encoding_dim, activation='sigmoid')(layer3)
 
 #encoder model
 encoder = Model(input_image, encoded)
@@ -61,7 +60,7 @@ encoder.summary()
 encoded_input = Input(shape=(encoding_dim,))
 
 #maps ecoded data to original
-intermed = Dense(200, activation='sigmoid')(encoded_input)
+intermed = Dense(250, activation='sigmoid')(encoded_input)
 decoded = Dense(target_dim, activation='sigmoid')(intermed)
 
 #decoder model
@@ -75,7 +74,7 @@ autoencoder = Model(input_image, decoder(encoder(input_image)))
 
 print('==>Compiling autoencoder.')
 #autoencoder.compile(loss='binary_crossentropy', optimizer='adadelta')
-autoencoder.compile(loss='mean_squared_error', optimizer='nadam')
+autoencoder.compile(loss='mean_squared_error', optimizer='adam')
 
 
 autoencoder.summary()
@@ -84,7 +83,7 @@ print('==>Fitting autoencoder.')
 autoencoder.fit_generator(generator=training_generator, 
     steps_per_epoch=steps_per_epoch, epochs=num_epochs, 
     validation_data=validation_generator, validation_steps=100,
-    use_multiprocessing=True, workers=3)
+    use_multiprocessing=True, workers=4)
 
 #print('==>Making decoder and encoder.')
 
