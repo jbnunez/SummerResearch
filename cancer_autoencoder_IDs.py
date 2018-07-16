@@ -45,7 +45,7 @@ for i in range(N_cases):
     case_path = cancer_path+'/'+cases[i]
     subdirs = os.listdir(path=case_path)
     case_IDs = explore_dir(case_path)
-    if (i+1)%25==0:
+    if (i+1)%10==0:
         print("-- Explored "+str(i+1)+" out of "+str(N_cases)+" subdirectories")
     IDs += case_IDs
     #print(len(IDs))

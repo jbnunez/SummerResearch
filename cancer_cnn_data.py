@@ -5,6 +5,7 @@ import numpy as np
 import pydicom
 
 print('==> Getting image labels')
+#tumor status file
 labels_file = "nationwidechildrens.org_clinical_follow_up_v1.0_gbm.txt"
 labels_df = pd.read_csv(labels_file, sep='	', index_col=1)
 labels_df = labels_df.drop(labels_df.index[[0,1]])

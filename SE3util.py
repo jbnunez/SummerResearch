@@ -12,7 +12,7 @@ def MatVecToSEn(mat, vec):
     SEmat = np.zeros((d1+1, d2+1))
     SEmat[:d1,:d2] = mat
     SEmat[d1, :d2] = vec
-    SEmat[d1+1, d2+1] = 1.
+    SEmat[-1, -1] = 1.
     return SE3mat
 
 def SEnToMatVec(SEmat):
@@ -31,18 +31,24 @@ def CovToSEn(covmat):
 def inner(Sx, Sy):
     return np.trace(Sx.T @ Sy)
 
+def norm(Sx):
+    return np.trace(Sx.T @ Sx)
+
 def inner(wx, vx, wy, vy):
     return np.trace(wx.T @ wy) + np.dot(vx, vy)
+
+def norm(wx, vx):
+    return np.trace(wx.T @ wx) + np.dot(vx, vx)
 
 def dist(B, A):
     diff = B - A
     return np.trace(diff.T @ diff)
 
-#minimizes ||B-A||^2_GA wrt A
+#for the mean, we want the value in SE(3)
+#that minimizes sum_n dist(Mu, M_n)
+# = sum_n tr((Mu-M_n)^T (Mu-M_n))
 
-
-
-
+#projection into SE(3)
 
 
 
