@@ -84,8 +84,8 @@ autoencoder = Model(input_image, decoder(encoder(input_image)))
 
 
 print('==>Compiling autoencoder.')
-autoencoder.compile(loss='binary_crossentropy', optimizer='adadelta')
-#autoencoder.compile(loss='mean_squared_error', optimizer='adam')
+#autoencoder.compile(loss='binary_crossentropy', optimizer='adadelta')
+autoencoder.compile(loss='mean_squared_error', optimizer='adam')
 
 
 autoencoder.summary()
@@ -94,17 +94,17 @@ print('==>Fitting autoencoder.')
 autoencoder.fit_generator(generator=training_generator, 
     steps_per_epoch=steps_per_epoch, epochs=num_epochs, 
     validation_data=validation_generator, validation_steps=100,
-    use_multiprocessing=True, workers=3)
+    use_multiprocessing=True, workers=4)
 
 #print('==>Making decoder and encoder.')
 
 print('==>Saving decoder and encoder.')
 #encoder.summary()
-# encoder.save("cancer_encoder.h5")
-# decoder.save("cancer_decoder.h5")
+encoder.save("cancer_encoder.h5")
+decoder.save("cancer_decoder.h5")
 # autoencoder.save("cancer_autoencoder.h5")
 
-encoder.save("cancer_encoder_bce.h5")
-decoder.save("cancer_decoder_bce.h5")
-autoencoder.save("cancer_autoencoder_bce.h5")
+# encoder.save("cancer_encoder_bce.h5")
+# decoder.save("cancer_decoder_bce.h5")
+# autoencoder.save("cancer_autoencoder_bce.h5")
 
