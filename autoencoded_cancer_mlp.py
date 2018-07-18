@@ -14,7 +14,7 @@ import h5py
 num_epochs = 10
 steps_per_epoch = 1000
 
-input_shape = (500,)
+input_shape = (600,)
 
 IDs = pickle.load(open("cancer_IDs", "rb"))
 train_IDs, test_IDs = train_test_split(IDs, test_size=0.2)

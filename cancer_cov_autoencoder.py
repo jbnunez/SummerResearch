@@ -15,7 +15,7 @@ import h5py
 
 
 #use a mutlilayer cnn pooling strategy
-encoding_dim = 100
+encoding_dim = 200
 input_shape = (273,) #16x16 + 16 + 1
 target_dim = 273
 num_epochs = 10
@@ -46,8 +46,8 @@ input_image = Input(shape=input_shape)
 
 #architecture of the encoder
 layer1 = Dense(800, activation='sigmoid')(input_image)
-layer2 = Dense(600, activation='sigmoid')(layer1)
-layer3 = Dense(400, activation='sigmoid')(layer2)
+layer2 = Dense(800, activation='sigmoid')(layer1)
+layer3 = Dense(600, activation='sigmoid')(layer2)
 #layer4 = Dense(200, activation='sigmoid')(layer3)
 encoded = Dense(encoding_dim, activation='sigmoid')(layer3)
 
@@ -60,7 +60,7 @@ encoder.summary()
 encoded_input = Input(shape=(encoding_dim,))
 
 #maps ecoded data to original
-intermed = Dense(250, activation='sigmoid')(encoded_input)
+intermed = Dense(400, activation='sigmoid')(encoded_input)
 decoded = Dense(target_dim, activation='sigmoid')(intermed)
 
 #decoder model
